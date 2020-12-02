@@ -14,7 +14,7 @@ figma.showUI(__html__, {
 let currentFrame = figma.createFrame();
 let frameNum = 1;
 currentFrame.name = "Canvas " + frameNum;
-let keyboardFrame = figma.currentPage.findOne(n => n.name === "LOOKHERE" && n.type === "FRAME");
+let keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME");
 currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
 currentFrame.y = keyboardFrame.y;
 currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
@@ -30,13 +30,10 @@ figma.ui.onmessage = msg => {
             coordMap[LETTERS[i]] = { x: node.x, y: node.y };
         }
     }
-    if (msg.type === 'new-vector') {
-        resetVector();
-    }
     if (msg.type === 'new-canvas') {
         let previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME");
-        let keyboardFrame = figma.currentPage.findOne(n => n.name === "LOOKHERE" && n.type === "FRAME");
-        let currentFrame = figma.createFrame();
+        keyboardFrame = figma.currentPage.findOne(n => n.name === "LOOKHERE" && n.type === "FRAME");
+        currentFrame = figma.createFrame();
         frameNum++;
         currentFrame.name = "Canvas " + frameNum;
         currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
@@ -47,59 +44,65 @@ figma.ui.onmessage = msg => {
     // One way of distinguishing between different types of messages sent from
     // your HTML page is to use an object with a "type" property like this.
     if (msg.type === 'handle-key') {
-        const nodes = [];
+        if (msg.keyCode == 13) {
+            resetVector();
+        }
         let pressedLetter = String.fromCharCode(msg.keyCode).toUpperCase();
-        let pressedCoord = coordMap[pressedLetter];
-        //set x and y of vector to smallest x and y coordinates of nodes
-        if (pressedCoord.x < smallestX) {
-            console.log("inside");
+        if (LETTERS.includes(pressedLetter)) {
+            const nodes = [];
+            let pressedCoord = coordMap[pressedLetter];
+            //set x and y of vector to smallest x and y coordinates of nodes
+            if (pressedCoord.x < smallestX) {
+                console.log("inside");
+                console.log("pressed coord x: " + pressedCoord.x);
+                console.log("smallest x: " + smallestX);
+                smallestX = pressedCoord.x;
+            }
+            if (pressedCoord.y < smallestY) {
+                smallestY = pressedCoord.y;
+            }
+            console.log("outside");
             console.log("pressed coord x: " + pressedCoord.x);
             console.log("smallest x: " + smallestX);
-            smallestX = pressedCoord.x;
-        }
-        if (pressedCoord.y < smallestY) {
-            smallestY = pressedCoord.y;
-        }
-        console.log("outside");
-        console.log("pressed coord x: " + pressedCoord.x);
-        console.log("smallest x: " + smallestX);
-        //reset vector node is current one is deleted
-        //initiate vector
-        if (vectData == null) {
-            // vectNode is null, so this is our first keypress
-            vectNode = figma.createVector();
-            vectNode.name = "keyboard";
-            vectNode.x = smallestX;
-            vectNode.y = smallestY;
-            vectData = `M ${pressedCoord.x} ${pressedCoord.y} Z`;
-            vectNode.vectorPaths = [{
-                    windingRule: 'EVENODD',
-                    data: vectData,
-                }];
-            currentFrame.appendChild(vectNode);
-        }
-        else {
-            let vectorPathsData = vectData;
-            // Remove the Z from the end of the paths data
-            vectorPathsData = vectorPathsData.slice(0, vectorPathsData.length - 1);
-            // Add a line to the new coordinate
-            vectorPathsData = vectorPathsData + `L ${pressedCoord.x} ${pressedCoord.y} Z`;
-            if (vectNode == null) {
+            //reset vector node is current one is deleted
+            //initiate vector
+            if (vectData == null) {
+                // vectNode is null, so this is our first keypress
                 vectNode = figma.createVector();
+                vectNode.name = "keyboard";
+                vectNode.x = smallestX;
+                vectNode.y = smallestY;
+                vectData = `M ${pressedCoord.x} ${pressedCoord.y} Z`;
+                vectNode.vectorPaths = [{
+                        windingRule: 'EVENODD',
+                        data: vectData,
+                    }];
+                console.log(currentFrame.name);
+                currentFrame.appendChild(vectNode);
             }
-            vectNode.vectorPaths = [{
-                    windingRule: 'EVENODD',
-                    data: vectorPathsData,
-                }];
-            vectNode.x = smallestX;
-            vectNode.y = smallestY;
-            vectData = vectorPathsData;
-        }
-        figma.currentPage.selection = nodes;
-        figma.viewport.scrollAndZoomIntoView(nodes);
-        if (figma.currentPage.findOne(n => n.type === "VECTOR" && n.name == "keyboard") == null) {
-            resetVector();
-            console.log("rest");
+            else {
+                let vectorPathsData = vectData;
+                // Remove the Z from the end of the paths data
+                vectorPathsData = vectorPathsData.slice(0, vectorPathsData.length - 1);
+                // Add a line to the new coordinate
+                vectorPathsData = vectorPathsData + `L ${pressedCoord.x} ${pressedCoord.y} Z`;
+                if (vectNode == null) {
+                    vectNode = figma.createVector();
+                }
+                vectNode.vectorPaths = [{
+                        windingRule: 'EVENODD',
+                        data: vectorPathsData,
+                    }];
+                vectNode.x = smallestX;
+                vectNode.y = smallestY;
+                vectData = vectorPathsData;
+            }
+            figma.currentPage.selection = nodes;
+            figma.viewport.scrollAndZoomIntoView(nodes);
+            if (figma.currentPage.findOne(n => n.type === "VECTOR" && n.name == "keyboard") == null) {
+                resetVector();
+                console.log("rest");
+            }
         }
     }
     function resetVector() {

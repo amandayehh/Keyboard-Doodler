@@ -5,8 +5,9 @@
   <textarea name="Text1" class="input-field textarea"  placeholder="Type here to start drawing"></textarea>
 </div>
 
-<button id="new-vector" class="button-vector">Start a New Vector</button>
-
+<div class="hint">
+<div id="new-vector" class="button-vector">Press Return to Start a New Shape</div>
+</div>
 
 <button id="new-canvas" class="button-canvas">
   <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,10 +23,6 @@
 document.onkeypress = (e) => {
   parent.postMessage({ pluginMessage: { type: 'handle-key', keyCode: e.keyCode } }, '*')
 
-}
-
-document.getElementById('new-vector').onclick = () => {
-  parent.postMessage({ pluginMessage: { type: 'new-vector' } }, '*')
 }
 
 document.getElementById('new-canvas').onclick = () => {
@@ -47,54 +44,64 @@ document.getElementById('new-canvas').onclick = () => {
     color:rgba(0, 0, 0, 0.8);
   }
 
-
+  .input{
+    z-index: 10;
+  }
 
   textarea{
     resize:none;
     width:100%;
-    height:238px;
+    height:208px;
     font-family: 'Inter var', sans-serif;
     padding:8px;
-    border-radius: 2px;
+    border-radius: 2px 2px 0px 0px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 2;
+
+  }
+
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgba(0, 0, 0, 0.3);
   }
 
   textarea:focus {
     outline: none !important;
     border:2px solid #189FFB;
     padding:7px;
-
 }
 
   .button-vector{
-    cursor: pointer;
+    cursor: default;
     height:30px;
-    width:100%;
-    background: rgba(0, 0, 0, 0.06); 
+    width:calc(100% - 10px);
+    background:white; 
     border:none;
     border-radius: 0px 0px 2px 2px;
-    transform: translateY(-30px);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    color:#189FFB;
-    opacity: 0.4;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: none;
+
+    color:rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    z-index: -2;
+    display:flex;
+    align-items: center;
+    padding-left:8px;
   }
 
-  .button-vector:hover{
-    opacity:1;
-  }
+
 
   .button-canvas{
     cursor: pointer;
     border:none;
-    transform: translateY(-20px);
     background:none;
     margin-bottom: -100px;
+    margin-top:10px;
     display:flex;   
     align-items:center; 
     height:30px;
     border-radius: 2px;
     padding-left: 6px;
     padding-right: 12px;
-
   }
   
 
