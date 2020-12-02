@@ -1,0 +1,7 @@
+{
+  "name": "Keyboard Draw",
+  "id": "915336153492676096",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html"
+}
