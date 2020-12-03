@@ -14,23 +14,28 @@ figma.showUI(__html__, {
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
-
-let currentFrame = figma.createFrame();
-let frameNum = 1;
-currentFrame.name = "Canvas " + frameNum;
-
-let keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME")
-currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
-currentFrame.y = keyboardFrame.y;
-
-currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
-
+let currentFrame, frameNum, keyboardFrame, smallestX, smallestY, previousFrame;
+frameNum = 1;
 let vectData: string | null = null
 let vectNode: VectorNode | null = null
+if (figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME") == null) {
+  figma.ui.postMessage("no keyboard")
+} else {
 
-let smallestX = keyboardFrame.width;
-let smallestY = keyboardFrame.height;
 
+  currentFrame = figma.createFrame();
+  frameNum = 1;
+  currentFrame.name = "Canvas " + frameNum;
+
+  keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME")
+  currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
+  currentFrame.y = keyboardFrame.y;
+
+  currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
+
+  smallestX = keyboardFrame.width;
+  smallestY = keyboardFrame.height;
+}
 
 figma.ui.onmessage = msg => {
 
@@ -47,8 +52,8 @@ figma.ui.onmessage = msg => {
 
 
   if (msg.type === 'new-canvas') {
-    let previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")
-    keyboardFrame = figma.currentPage.findOne(n => n.name === "LOOKHERE" && n.type === "FRAME")
+    previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")
+    keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME")
     currentFrame = figma.createFrame();
     frameNum++;
     currentFrame.name = "Canvas " + frameNum;

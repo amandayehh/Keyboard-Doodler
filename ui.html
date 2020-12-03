@@ -6,7 +6,11 @@
 </div>
 
 <div class="hint">
-<div id="new-vector" class="button-vector">Press Return to Start a New Shape</div>
+  <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M1 6C1 3.51472 3.01472 1.5 5.5 1.5C7.98528 1.5 10 3.51472 10 6C10 8.48528 7.98528 10.5 5.5 10.5C3.01472 10.5 1 8.48528 1 6ZM5.5 11.5C2.46243 11.5 0 9.03757 0 6C0 2.96243 2.46243 0.5 5.5 0.5C8.53757 0.5 11 2.96243 11 6C11 9.03757 8.53757 11.5 5.5 11.5ZM5 8.5625V8.0625V6V5.5H6V6V8.0625V8.5625H5ZM5.5 3.40234C5.16992 3.40234 4.90234 3.66992 4.90234 4C4.90234 4.33008 5.16992 4.59766 5.5 4.59766C5.83008 4.59766 6.09766 4.33008 6.09766 4C6.09766 3.66992 5.83008 3.40234 5.5 3.40234Z" fill="black" fill-opacity="0.8"/>
+    </svg>
+    
+<div id="new-vector" class="button-vector">Press Return (↵) to Start a New Shape</div>
 </div>
 
 <button id="new-canvas" class="button-canvas">
@@ -18,7 +22,23 @@
   
   </button>
 </div>
+
+</div>
+
+<div class="instructions invisible">
+  <h2 class="instruction-text"> To start, duplicate this community file below. </h2>
+  <a href="https://www.figma.com/community/file/784448220678228461/Figma-Auto-Layout-playground" target="__blank">
+  <div class="card">
+    <img class="card-img" src="https://i.imgur.com/vP1yaOE.png" alt="A heart layed over a keyboard">
+    <p class="card-text">Type that Shape</p>
+  </div>
+</a>
+</div>
 <script>
+
+onmessage = (event) => {
+  document.getElementsByClassName("instructions")[0].classList.remove("invisible");
+}
 
 document.onkeypress = (e) => {
   parent.postMessage({ pluginMessage: { type: 'handle-key', keyCode: e.keyCode } }, '*')
@@ -36,12 +56,19 @@ document.getElementById('new-canvas').onclick = () => {
   @import url('https://rsms.me/inter/inter.css');
   @supports (font-variation-settings: normal) {
 
-    
+    body{
+      margin:0px;
+    }
+
   *{
     font-family: 'Inter var', sans-serif;
     font-size: 11px;
     line-height: 140%;
     color:rgba(0, 0, 0, 0.8);
+  }
+
+  .container{
+    margin:8px;
   }
 
   .input{
@@ -70,8 +97,10 @@ document.getElementById('new-canvas').onclick = () => {
     padding:7px;
 }
 
-  .button-vector{
-    cursor: default;
+.hint{
+  display:flex;
+  align-items: center;
+  cursor: default;
     height:30px;
     width:calc(100% - 10px);
     background:white; 
@@ -80,12 +109,17 @@ document.getElementById('new-canvas').onclick = () => {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-top: none;
 
-    color:rgba(0, 0, 0, 0.3);
+    color:rgba(0, 0, 0, 0.8);
     opacity: 1;
     z-index: -2;
     display:flex;
     align-items: center;
     padding-left:8px;
+
+}
+
+  .button-vector{
+   margin-left:8px;
   }
 
 
@@ -112,6 +146,53 @@ document.getElementById('new-canvas').onclick = () => {
   .button-canvas-text{
     margin-left:4px;
     padding-top:2px;
+  }
+
+
+  .instructions{
+    background:white;
+    position: absolute;
+    height:100%;
+    width:100%;
+    top:0;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+  }
+
+  .instruction-text{
+    width: 212;
+    font-size:13px;
+    font-weight:bold;
+    text-align: center;
+    margin-top:48px;
+    margin-bottom:16px;
+  }
+
+  .card{
+    width:192px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+
+  .card-img{
+    width:192px;
+    border-radius: 2px 2px 0 0;
+  }
+
+  a{
+    text-decoration: none;
+
+  }
+
+  .card-text{
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .invisible{
+    display:none;
   }
 
 

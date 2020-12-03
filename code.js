@@ -11,17 +11,24 @@ figma.showUI(__html__, {
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
-let currentFrame = figma.createFrame();
-let frameNum = 1;
-currentFrame.name = "Canvas " + frameNum;
-let keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME");
-currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
-currentFrame.y = keyboardFrame.y;
-currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
+let currentFrame, frameNum, keyboardFrame, smallestX, smallestY, previousFrame;
+frameNum = 1;
 let vectData = null;
 let vectNode = null;
-let smallestX = keyboardFrame.width;
-let smallestY = keyboardFrame.height;
+if (figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME") == null) {
+    figma.ui.postMessage("no keyboard");
+}
+else {
+    currentFrame = figma.createFrame();
+    frameNum = 1;
+    currentFrame.name = "Canvas " + frameNum;
+    keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME");
+    currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
+    currentFrame.y = keyboardFrame.y;
+    currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
+    smallestX = keyboardFrame.width;
+    smallestY = keyboardFrame.height;
+}
 figma.ui.onmessage = msg => {
     let LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=][;/.,";
     let coordMap = {};
@@ -31,14 +38,21 @@ figma.ui.onmessage = msg => {
         }
     }
     if (msg.type === 'new-canvas') {
-        let previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME");
-        keyboardFrame = figma.currentPage.findOne(n => n.name === "LOOKHERE" && n.type === "FRAME");
         currentFrame = figma.createFrame();
+        keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME");
         frameNum++;
+
+        if(figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME") != null){
+            previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME");
+            currentFrame.x = previousFrame.x + previousFrame.width + 100;
+            currentFrame.y = previousFrame.y;
+        }else{
+            currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
+            currentFrame.y = keyboardFrame.y;
+        }
         currentFrame.name = "Canvas " + frameNum;
         currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
-        currentFrame.x = previousFrame.x + previousFrame.width + 100;
-        currentFrame.y = previousFrame.y;
+ 
         resetVector();
     }
     // One way of distinguishing between different types of messages sent from
@@ -48,7 +62,7 @@ figma.ui.onmessage = msg => {
             resetVector();
         }
         let pressedLetter = String.fromCharCode(msg.keyCode).toUpperCase();
-        if (LETTERS.includes(pressedLetter)) {
+        if (LETTERS.includes(pressedLetter) && figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")!=null ) {
             const nodes = [];
             let pressedCoord = coordMap[pressedLetter];
             //set x and y of vector to smallest x and y coordinates of nodes
