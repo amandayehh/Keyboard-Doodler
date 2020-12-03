@@ -38,21 +38,14 @@ figma.ui.onmessage = msg => {
         }
     }
     if (msg.type === 'new-canvas') {
-        currentFrame = figma.createFrame();
+        previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME");
         keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME");
+        currentFrame = figma.createFrame();
         frameNum++;
-
-        if(figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME") != null){
-            previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME");
-            currentFrame.x = previousFrame.x + previousFrame.width + 100;
-            currentFrame.y = previousFrame.y;
-        }else{
-            currentFrame.x = keyboardFrame.x + keyboardFrame.width + 100;
-            currentFrame.y = keyboardFrame.y;
-        }
         currentFrame.name = "Canvas " + frameNum;
         currentFrame.resize(keyboardFrame.width, keyboardFrame.height);
- 
+        currentFrame.x = previousFrame.x + previousFrame.width + 100;
+        currentFrame.y = previousFrame.y;
         resetVector();
     }
     // One way of distinguishing between different types of messages sent from
@@ -62,7 +55,7 @@ figma.ui.onmessage = msg => {
             resetVector();
         }
         let pressedLetter = String.fromCharCode(msg.keyCode).toUpperCase();
-        if (LETTERS.includes(pressedLetter) && figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")!=null ) {
+        if (LETTERS.includes(pressedLetter)) {
             const nodes = [];
             let pressedCoord = coordMap[pressedLetter];
             //set x and y of vector to smallest x and y coordinates of nodes
