@@ -8,7 +8,7 @@
 <p align="center">
   <img align="center" src="https://i.imgur.com/qBEM2sq.png" width="500px"> 
 </p>
-
+<br/>
 <p>With Keyboard Doodler, you can draw with your keyboard!</p>
 <p>Why would I want this? You may ask. Drawing the trackpad is overrated! All the cool kids these days draw with the keyboard!</p>
 <p>This plugin turns your keyboard into a canvas. By simply pressing keys, vector nodes in that key's location appear on the frame. Try it out and see what drawings you can create!</p>
