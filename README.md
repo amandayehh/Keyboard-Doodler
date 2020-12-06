@@ -3,7 +3,7 @@
   <img align="center" src="https://i.imgur.com/vhneqin.png" width="56px"> 
 </p>
 <h1 align="center">Keyboard Doodler</h1>
-<h3 align="center">Draw with your keyboard</h3>
+<h3 align="center">Draw with your keyboard!</h3>
 
 <p align="center">
   <img align="center" src="https://i.imgur.com/qBEM2sq.png" width="500px"> 
