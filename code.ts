@@ -61,13 +61,18 @@ figma.loadFontAsync({ family: "Roboto", style: "Regular" }).then(() => {
 figma.ui.onmessage = msg => {
   for (let i = 0; i < LETTERS.length; i++) {
     for (let node of figma.currentPage.findAll((n) => n.name == LETTERS[i])) {
+      console.log(node.x)
       coordMap[LETTERS[i]] = { x: node.x, y: node.y }
     }
   }
 
   //make a new canvas
   if (msg.type === 'new-canvas') {
-    previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")
+    if (figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME") != null) {
+      previousFrame = figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME")
+    } else {
+      previousFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME")
+    }
     keyboardFrame = figma.currentPage.findOne(n => n.name === "Keyboard" && n.type === "FRAME")
     currentFrame = figma.createFrame();
     frameNum++;
@@ -83,88 +88,82 @@ figma.ui.onmessage = msg => {
   // your HTML page is to use an object with a "type" property like this.
   if (msg.type === 'handle-key') {
 
-    if (msg.keyCode == 13) {
-      resetVector()
-    }
-
-
-    let pressedLetter = String.fromCharCode(msg.keyCode).toUpperCase();
-
-    if (LETTERS.includes(pressedLetter)) {
-      const nodes: SceneNode[] = [];
-
-      let pressedCoord = coordMap[pressedLetter];
-
-      //set x and y of vector to smallest x and y coordinates of nodes
-
-
-      if (pressedCoord.x < smallestX) {
-        console.log("inside")
-        console.log("pressed coord x: " + pressedCoord.x)
-        console.log("smallest x: " + smallestX)
-        smallestX = pressedCoord.x
+    if (figma.currentPage.findOne(n => n.name === "Canvas " + frameNum && n.type === "FRAME") == null) {
+    } else {
+      if (msg.keyCode == 13) {
+        resetVector()
       }
-      if (pressedCoord.y < smallestY) {
-        smallestY = pressedCoord.y
-      }
-      console.log("outside")
-      console.log("pressed coord x: " + pressedCoord.x)
-      console.log("smallest x: " + smallestX)
 
-      //reset vector node is current one is deleted
+      let pressedLetter = String.fromCharCode(msg.keyCode).toUpperCase();
 
+      if (LETTERS.includes(pressedLetter)) {
+        const nodes: SceneNode[] = [];
 
-      //initiate vector
-      if (vectData == null) {
+        let pressedCoord = coordMap[pressedLetter];
 
-        // vectNode is null, so this is our first keypress
-        vectNode = figma.createVector()
-        vectNode.name = "keyboard"
-        vectNode.x = smallestX;
-        vectNode.y = smallestY;
-        vectData = `M ${pressedCoord.x} ${pressedCoord.y} Z`
-        vectNode.vectorPaths = [{
-          windingRule: 'EVENODD',
-          data: vectData,
-        }]
-        console.log(currentFrame.name)
-        currentFrame.appendChild(vectNode)
+        //set x and y of vector to smallest x and y coordinates of nodes
 
 
-      } else {
-        let vectorPathsData: string = vectData
-        // Remove the Z from the end of the paths data
-        vectorPathsData = vectorPathsData.slice(0, vectorPathsData.length - 1)
+        if (pressedCoord.x < smallestX) {
 
-        // Add a line to the new coordinate
-        vectorPathsData = vectorPathsData + `L ${pressedCoord.x} ${pressedCoord.y} Z`
-
-        if (vectNode == null) {
-          vectNode = figma.createVector()
-
+          smallestX = pressedCoord.x
+        }
+        if (pressedCoord.y < smallestY) {
+          smallestY = pressedCoord.y
         }
 
-        vectNode.vectorPaths = [{
-          windingRule: 'EVENODD',
-          data: vectorPathsData,
-        }]
+        //reset vector node is current one is deleted
 
 
-        vectNode.x = smallestX;
-        vectNode.y = smallestY;
-        vectData = vectorPathsData
+        //initiate vector
+        if (vectData == null) {
+
+          // vectNode is null, so this is our first keypress
+          vectNode = figma.createVector()
+          vectNode.name = "keyboard"
+          vectNode.x = smallestX;
+          vectNode.y = smallestY;
+          vectData = `M ${pressedCoord.x} ${pressedCoord.y} Z`
+          vectNode.vectorPaths = [{
+            windingRule: 'EVENODD',
+            data: vectData,
+          }]
+          currentFrame.appendChild(vectNode)
+
+
+        } else {
+          let vectorPathsData: string = vectData
+          // Remove the Z from the end of the paths data
+          vectorPathsData = vectorPathsData.slice(0, vectorPathsData.length - 1)
+
+          // Add a line to the new coordinate
+          vectorPathsData = vectorPathsData + `L ${pressedCoord.x} ${pressedCoord.y} Z`
+
+          if (vectNode == null) {
+            vectNode = figma.createVector()
+
+          }
+
+          vectNode.vectorPaths = [{
+            windingRule: 'EVENODD',
+            data: vectorPathsData,
+          }]
+
+
+          vectNode.x = smallestX;
+          vectNode.y = smallestY;
+          vectData = vectorPathsData
+        }
+
+        figma.currentPage.selection = nodes;
+        figma.viewport.scrollAndZoomIntoView(nodes);
+
+        if (figma.currentPage.findOne(n => n.type === "VECTOR" && n.name == "keyboard") == null) {
+          resetVector()
+        }
+
       }
-
-      figma.currentPage.selection = nodes;
-      figma.viewport.scrollAndZoomIntoView(nodes);
-
-      if (figma.currentPage.findOne(n => n.type === "VECTOR" && n.name == "keyboard") == null) {
-        resetVector()
-        console.log("rest")
-      }
-
     }
-
   }
 
 

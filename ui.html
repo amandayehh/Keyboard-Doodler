@@ -1,200 +1,196 @@
-
-
 <div class="container">
   <div class="input">
-    <textarea name="Text1" class="input-field textarea"  placeholder="Type here to start drawing"></textarea>
+    <textarea name="Text1" class="input-field textarea" placeholder="Type here to start drawing"></textarea>
   </div>
-  
+
   <div class="hint">
     <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M1 6C1 3.51472 3.01472 1.5 5.5 1.5C7.98528 1.5 10 3.51472 10 6C10 8.48528 7.98528 10.5 5.5 10.5C3.01472 10.5 1 8.48528 1 6ZM5.5 11.5C2.46243 11.5 0 9.03757 0 6C0 2.96243 2.46243 0.5 5.5 0.5C8.53757 0.5 11 2.96243 11 6C11 9.03757 8.53757 11.5 5.5 11.5ZM5 8.5625V8.0625V6V5.5H6V6V8.0625V8.5625H5ZM5.5 3.40234C5.16992 3.40234 4.90234 3.66992 4.90234 4C4.90234 4.33008 5.16992 4.59766 5.5 4.59766C5.83008 4.59766 6.09766 4.33008 6.09766 4C6.09766 3.66992 5.83008 3.40234 5.5 3.40234Z" fill="black" fill-opacity="0.8"/>
-      </svg>
-      
-  <div id="new-vector" class="button-vector">Press Return (↵) to Start a New Shape</div>
+      <path fill-rule="evenodd" clip-rule="evenodd"
+        d="M1 6C1 3.51472 3.01472 1.5 5.5 1.5C7.98528 1.5 10 3.51472 10 6C10 8.48528 7.98528 10.5 5.5 10.5C3.01472 10.5 1 8.48528 1 6ZM5.5 11.5C2.46243 11.5 0 9.03757 0 6C0 2.96243 2.46243 0.5 5.5 0.5C8.53757 0.5 11 2.96243 11 6C11 9.03757 8.53757 11.5 5.5 11.5ZM5 8.5625V8.0625V6V5.5H6V6V8.0625V8.5625H5ZM5.5 3.40234C5.16992 3.40234 4.90234 3.66992 4.90234 4C4.90234 4.33008 5.16992 4.59766 5.5 4.59766C5.83008 4.59766 6.09766 4.33008 6.09766 4C6.09766 3.66992 5.83008 3.40234 5.5 3.40234Z"
+        fill="black" fill-opacity="0.8" />
+    </svg>
+
+    <div id="new-vector" class="button-vector">Press Return (↵) to Start a New Shape</div>
   </div>
-  
+
   <button id="new-canvas" class="button-canvas">
     <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M9 9V4H10V9H15V10H10V15H9V10H4V9H9Z" fill="black" fill-opacity="0.8"/>
-      </svg>
-      
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M9 9V4H10V9H15V10H10V15H9V10H4V9H9Z" fill="black"
+        fill-opacity="0.8" />
+    </svg>
+
     <p class="button-canvas-text">Draw on a New Canvas</p>
-    
-    </button>
-  </div>
-  
-  </div>
-  
-  <div class="instructions invisible">
-    <h2 class="instruction-text"> To start, duplicate this community file below. </h2>
-    <a href="https://www.figma.com/community/file/784448220678228461/Figma-Auto-Layout-playground" target="__blank">
-    <div class="card">
-      <img class="card-img" src="https://i.imgur.com/dilkd00.png" alt="A heart layed over a keyboard">
-      <p class="card-text">Type that Shape</p>
-    </div>
-  </a>
-  </div>
-  <script>
-  
+
+  </button>
+</div>
+
+</div>
+<script>
   onmessage = (event) => {
     document.getElementsByClassName("instructions")[0].classList.remove("invisible");
   }
-  
+
   document.onkeypress = (e) => {
-    parent.postMessage({ pluginMessage: { type: 'handle-key', keyCode: e.keyCode } }, '*')
-  
-  }
-  
-  document.getElementById('new-canvas').onclick = () => {
-    parent.postMessage({ pluginMessage: { type: 'new-canvas' } }, '*')
-  }
-  
-  
-  </script>
-  
-  <style>
-    @import url('https://rsms.me/inter/inter.css');
-    @supports (font-variation-settings: normal) {
-  
-      body{
-        margin:0px;
+    parent.postMessage({
+      pluginMessage: {
+        type: 'handle-key',
+        keyCode: e.keyCode
       }
-  
-    *{
+    }, '*')
+
+  }
+
+  document.getElementById('new-canvas').onclick = () => {
+    parent.postMessage({
+      pluginMessage: {
+        type: 'new-canvas'
+      }
+    }, '*')
+  }
+</script>
+
+<style>
+  @import url('https://rsms.me/inter/inter.css');
+
+  @supports (font-variation-settings: normal) {
+
+    body {
+      margin: 0px;
+    }
+
+    * {
       font-family: 'Inter var', sans-serif;
       font-size: 11px;
       line-height: 140%;
-      color:rgba(0, 0, 0, 0.8);
+      color: rgba(0, 0, 0, 0.8);
     }
-  
-    .container{
-      margin:8px;
+
+    .container {
+      margin: 8px;
     }
-  
-    .input{
+
+    .input {
       z-index: 10;
     }
-  
-    textarea{
-      resize:none;
-      width:100%;
-      height:208px;
+
+    textarea {
+      resize: none;
+      width: 100%;
+      height: 208px;
       font-family: 'Inter var', sans-serif;
-      padding:8px;
+      padding: 8px;
       border-radius: 2px 2px 0px 0px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       z-index: 2;
-  
+
     }
-  
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgba(0, 0, 0, 0.3);
+
+    ::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: rgba(0, 0, 0, 0.3);
     }
-  
+
     textarea:focus {
       outline: none !important;
-      border:2px solid #189FFB;
-      padding:7px;
-  }
-  
-  .hint{
-    display:flex;
-    align-items: center;
-    cursor: default;
-      height:30px;
-      width:calc(100% - 10px);
-      background:white; 
-      border:none;
+      border: 2px solid #189FFB;
+      padding: 7px;
+    }
+
+    .hint {
+      display: flex;
+      align-items: center;
+      cursor: default;
+      height: 30px;
+      width: calc(100% - 10px);
+      background: white;
+      border: none;
       border-radius: 0px 0px 2px 2px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-top: none;
-  
-      color:rgba(0, 0, 0, 0.8);
+
+      color: rgba(0, 0, 0, 0.8);
       opacity: 1;
       z-index: -2;
-      display:flex;
+      display: flex;
       align-items: center;
-      padding-left:8px;
-  
-  }
-  
-    .button-vector{
-     margin-left:8px;
+      padding-left: 8px;
+
     }
-  
-  
-  
-    .button-canvas{
+
+    .button-vector {
+      margin-left: 8px;
+    }
+
+
+
+    .button-canvas {
       cursor: pointer;
-      border:none;
-      background:none;
+      border: none;
+      background: none;
       margin-bottom: -100px;
-      margin-top:10px;
-      display:flex;   
-      align-items:center; 
-      height:30px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      height: 30px;
       border-radius: 2px;
       padding-left: 6px;
       padding-right: 12px;
     }
-    
-  
-    .button-canvas:hover{
-      background: rgba(0, 0, 0, 0.06); 
+
+
+    .button-canvas:hover {
+      background: rgba(0, 0, 0, 0.06);
     }
-  
-    .button-canvas-text{
-      margin-left:4px;
-      padding-top:2px;
+
+    .button-canvas-text {
+      margin-left: 4px;
+      padding-top: 2px;
     }
-  
-  
-    .instructions{
-      background:white;
+
+
+    .instructions {
+      background: white;
       position: absolute;
-      height:100%;
-      width:100%;
-      top:0;
-      display:flex;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      display: flex;
       flex-direction: column;
-      align-items:center;
+      align-items: center;
     }
-  
-    .instruction-text{
+
+    .instruction-text {
       width: 212;
-      font-size:13px;
-      font-weight:bold;
+      font-size: 13px;
+      font-weight: bold;
       text-align: center;
-      margin-top:48px;
-      margin-bottom:16px;
+      margin-top: 48px;
+      margin-bottom: 16px;
     }
-  
-    .card{
-      width:192px;
+
+    .card {
+      width: 192px;
       border-radius: 2px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       cursor: pointer;
     }
-  
-    .card-img{
-      width:192px;
+
+    .card-img {
+      width: 192px;
       border-radius: 2px 2px 0 0;
     }
-  
-    a{
+
+    a {
       text-decoration: none;
-  
+
     }
-  
-    .card-text{
+
+    .card-text {
       text-align: center;
       font-weight: bold;
     }
-  
-    .invisible{
-      display:none;
+
+    .invisible {
+      display: none;
     }
-  
-  
-  </style>
-  
+</style>
