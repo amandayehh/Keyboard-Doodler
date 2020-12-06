@@ -6,7 +6,7 @@
 <h3 align="center">A Figma plugin that allows you to draw with your keyboard</h3>
 
 <p align="center">
-  <img align="center" src="https://i.imgur.com/qBEM2sq.png" width="500px"> 
+  <img align="center" src="https://i.imgur.com/A4rJoJj.png" width="500px"> 
 </p>
 <br/>
 <p>With Keyboard Doodler, you can draw with your keyboard!</p>
